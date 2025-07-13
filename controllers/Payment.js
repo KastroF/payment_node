@@ -35,6 +35,10 @@ const buildPaymentOptions = (data, path) => {
 };
 
 exports.initPayment = async (req, res) => {
+
+    console.log(req.body); 
+    
+
   const isVisa = req.body.moneyType === "VISA";
   try {
     const payment = await new Payment({
@@ -81,18 +85,32 @@ exports.initPayment = async (req, res) => {
   }
 };
 
-exports.ebillingCallback = async (req, res) => {
+exports.useCallback = async (req, res) => {
   try {
-    await Payment.updateOne(
-      { _id: req.body.reference },
-      { $set: { status: "success" } }
+    const reference = req.body.reference;
+
+    const payment = await Payment.findByIdAndUpdate(
+      reference,
+      { $set: { status: "success" } },
+      { new: true }
     );
 
-    io.emit("paymentStatus", {
-      paymentId: req.body.reference,
-      status: "success",
-      message: "Paiement réussi",
-    });
+    if (!payment) {
+      return res.status(404).json({ error: "Paiement non trouvé." });
+    }
+
+    // Envoi de la notification à l'URL externe
+    try {
+      await axios.post("https://lamajoritebloquante.com/statut/", {
+        paymentId: payment._id,
+        bill_id: payment.bill_id || null,
+        status: "success"
+      });
+      console.log("retour envoyé avec succès");
+    } catch (notifyErr) {
+      console.error("Erreur lors de la notification :", notifyErr.message);
+      // Tu peux choisir de ne pas échouer la réponse locale à cause de la notification
+    }
 
     return res.status(201).json({ status: 0 });
   } catch (err) {
@@ -100,5 +118,4 @@ exports.ebillingCallback = async (req, res) => {
     return res.status(505).json({ error: err.message });
   }
 };
-
 
