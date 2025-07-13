@@ -106,8 +106,12 @@ exports.useCallback = async (req, res) => {
         paymentId: payment._id,
         bill_id: payment.bill_id || null,
         status: "success"
+      },{
+        paymentId: payment._id,
+        bill_id: payment.bill_id || null,
+        status: "success"
       });
-      console.log("retour envoyé avec succès");
+      console.log("retour envoyé avec succès", );
     } catch (notifyErr) {
       console.error("Erreur lors de la notification :", notifyErr.message);
       // Tu peux choisir de ne pas échouer la réponse locale à cause de la notification
