@@ -90,6 +90,7 @@ exports.useCallback = async (req, res) => {
   try {
     const reference = req.body.reference;
 
+    console.log(req.body);
     const payment = await Payment.findByIdAndUpdate(
       reference,
       { $set: { status: "success" } },
