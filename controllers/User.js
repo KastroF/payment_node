@@ -80,6 +80,8 @@ exports.signIn = async (req, res) => {
 
   exports.getUser = async (req, res) => {
 
+    console.log(req.body);
+
     try{
 
         const user = await User.findOne({_id: req.auth.userId}); 
