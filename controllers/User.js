@@ -37,3 +37,42 @@ exports.addUser = async (req, res) => {
     return res.status(500).json({ status: 2, message: "Erreur serveur." });
   }
 };
+
+
+exports.signIn = async (req, res) => {
+    try {
+      const { username, password } = req.body;
+  
+      // Vérification des champs
+      if (!username || !password) {
+        return res.status(400).json({ status: 1, message: "Nom d'utilisateur ou mot de passe manquant." });
+      }
+  
+      // Recherche de l'utilisateur
+      const user = await User.findOne({ username });
+  
+      if (!user) {
+        return res.status(404).json({ status: 2, message: "Utilisateur non trouvé." });
+      }
+  
+      // Comparaison du mot de passe
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+  
+      if (!isPasswordValid) {
+        return res.status(401).json({ status: 3, message: "Mot de passe incorrect." });
+      }
+  
+      // Génération du token
+      const token = jwt.sign(
+        { userId: user._id },
+        "JxqKuulLNPCNfaHBpmOoalilgsdykhgugdolhebAqeiupytfdg7iyi7whlotflqRf", // ⚠️ secret à placer dans .env
+        { expiresIn: '7d' }
+      );
+  
+      return res.status(200).json({ status: 0, token });
+  
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ status: 4, message: "Erreur serveur." });
+    }
+  };
