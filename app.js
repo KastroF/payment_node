@@ -26,7 +26,7 @@ app.use((req, res, next) => {
     next();
   });
 
-mongoose.connect("mongodb+srv://fideleN:Lno3F1o1P0V0jwgA@cluster0.utilj9q.mongodb.net/paymentstore?retryWrites=true&w=majority&appName=Cluster0",
+mongoose.connect("mongodb+srv://chronicklpaiements:A1JkVVCdrg8jBMO3@cluster0.xxusyhs.mongodb.net/paymentstore?retryWrites=true&w=majority&appName=Cluster0",
 
   
   { useNewUrlParser: true,
