@@ -125,3 +125,37 @@ exports.useCallback = async (req, res) => {
   }
 };
 
+
+exports.paiementsList = async (req, res) => {
+  try {
+    const { startAt = 0 } = req.body;
+
+    // 1. Paiements paginés (PAS de filtre)
+    const payments = await Payment.find({app_name: "PaiementMB"})
+      .sort({ date: -1 })
+      .skip(startAt)
+      .limit(10);
+
+    // 2. Filtre pour le calcul des totaux
+    const filterForTotals = { status: "success", app_name: "PaiementMB" };
+    const allFilteredPayments = await Payment.find(filterForTotals);
+
+    const brutes = allFilteredPayments.reduce((sum, p) => sum + (p.amount2 || 0), 0);
+    const net = allFilteredPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
+
+    // 3. Détermination du prochain startAt
+    const nextStartAt = payments.length < 10 ? null : startAt + payments.length;
+
+    // 4. Réponse
+    return res.status(200).json({
+      payments,
+      brutes,
+      net,
+      startAt: nextStartAt
+    });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Erreur serveur." });
+  }
+}

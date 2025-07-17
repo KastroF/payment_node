@@ -8,6 +8,6 @@ const paymentCtrl = require("../controllers/Payment");
 
 router.post("/initvisa", paymentCtrl.initPayment); 
 router.post("/callback", paymentCtrl.useCallback)
-
+router.post("/getlist", auth, paymentCtrl.paiementsList);
 
 module.exports = router; 
