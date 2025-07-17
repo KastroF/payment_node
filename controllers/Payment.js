@@ -148,6 +148,7 @@ exports.paiementsList = async (req, res) => {
 
     // 4. Réponse
     return res.status(200).json({
+      status: 0,
       payments,
       brutes,
       net,
