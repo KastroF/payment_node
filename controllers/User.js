@@ -76,3 +76,20 @@ exports.signIn = async (req, res) => {
       return res.status(500).json({ status: 4, message: "Erreur serveur." });
     }
   };
+
+
+  exports.getUser = async (req, res) => {
+
+    try{
+
+        const user = await User.findOne({_id: req.auth.userId}); 
+
+        res.status(200).json({status: 0, user}); 
+
+    }catch(err){
+
+        console.log(err); 
+        res.status(500).json({ status: 4, message: "Erreur serveur." });
+    }
+
+  }
