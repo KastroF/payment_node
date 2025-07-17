@@ -57,9 +57,11 @@ app.use((req, res, next) => {
 
 
 const paymentRouter = require("./routes/Payment"); 
+const userRouter = require("./routes/User"); 
 
+
+app.use("/api/user", userRouter)
 app.use("/api/payment", paymentRouter)
-
 
 
 

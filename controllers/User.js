@@ -1,0 +1,39 @@
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User'); // adapter le chemin
+
+exports.addUser = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    // Vérification basique
+    if (!username || !password) {
+      return res.status(400).json({ status: 1, message: "Nom d'utilisateur ou mot de passe manquant." });
+    }
+
+    // Hash du mot de passe
+    const hash = await bcrypt.hash(password, 10);
+
+    // Création de l'utilisateur
+    const newUser = new User({
+      username,
+      password: hash,
+      app: "PaiementMB"
+    });
+
+    const user = await newUser.save();
+
+    // Création du token
+    const token = jwt.sign(
+      { userId: user._id },
+      "JxqKuulLNPCNfaHBpmOoalilgsdykhgugdolhebAqeiupytfdg7iyi7whlotflqRf", // ⚠️ À placer dans une variable d’environnement
+      { expiresIn: '7d' } // conseillé
+    );
+
+    return res.status(201).json({ status: 0, token });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ status: 2, message: "Erreur serveur." });
+  }
+};
