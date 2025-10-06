@@ -46,7 +46,7 @@ exports.getKyc = async (req, res) => {
     const { system_name, phone } = req.body;
 
     // ✅ Construction de l’URL avec les paramètres GET
-    const path = `/shap/api/v1/merchant/kyc?payment_system_name=${encodeURIComponent(system_name)}&msisdn=${encodeURIComponent(phone)}`;
+    const path = `/api/v1/merchant/kyc?payment_system_name=${encodeURIComponent(system_name)}&msisdn=${encodeURIComponent(phone)}`;
 
     const options = {
       hostname: "stg.billing-easy.com",
