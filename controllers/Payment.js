@@ -48,6 +48,8 @@ exports.getKyc = async  (req, res) =>  {
     const options = buildPaymentOptions(payload, "/shap/api/v1/merchant/kyc");
     const response = await sendHttpRequest(options, payload);
 
+    console.log("la reponse", response);
+
     res.status(201).json({status: 0, response}); 
 
   }catch(err){
