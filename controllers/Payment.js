@@ -35,35 +35,57 @@ const buildPaymentOptions = (data, path) => {
   };
 };
 
-exports.getKyc = async  (req, res) =>  {
+const https = require("https");
 
-  try{
 
-    console.log(req.body);
-    const payload = JSON.stringify({
-      payment_system_name: req.body.system_name, 
-      msisdn: req.body.phone
+exports.getKyc = async (req, res) => {
+  try {
+    const username = "chronicklSarl";
+    const shared_key = "dfecfc1e-ef0d-45a3-b3c3-e3f5889aa84a";
+
+    const { system_name, phone } = req.body;
+
+    // ✅ Construction de l’URL avec les paramètres GET
+    const path = `/shap/api/v1/merchant/kyc?payment_system_name=${encodeURIComponent(system_name)}&msisdn=${encodeURIComponent(phone)}`;
+
+    const options = {
+      hostname: "stg.billing-easy.com",
+      path,
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        Accept: "application/json",
+        Authorization: `Basic ${Buffer.from(`${username}:${shared_key}`).toString("base64")}`,
+      },
+    };
+
+    // ✅ Envoi de la requête GET
+    const response = await new Promise((resolve, reject) => {
+      const reqHttp = https.request(options, (resHttp) => {
+        let data = "";
+        resHttp.on("data", (chunk) => (data += chunk));
+        resHttp.on("end", () => {
+          try {
+            resolve(JSON.parse(data));
+          } catch (err) {
+            reject(err);
+          }
+        });
+      });
+
+      reqHttp.on("error", reject);
+      reqHttp.end(); // pas de body sur GET
     });
-  
-    const options = buildPaymentOptions(payload, "/shap/api/v1/merchant/kyc");
-    const response = await sendHttpRequest(options, payload);
 
-    console.log("la reponse", response);
-
-    res.status(201).json({status: 0, response}); 
-
-  }catch(err){
-
-    console.log(err); 
-    res.status(505).json({err})
+    console.log("Réponse KYC :", response);
+    res.status(200).json({ status: 0, response });
+  } catch (err) {
+    console.error("Erreur KYC :", err);
+    res.status(500).json({ err });
   }
+};
 
-
-
-  
-
-
-}
 
 exports.initPayment = async (req, res) => {
 
