@@ -35,6 +35,33 @@ const buildPaymentOptions = (data, path) => {
   };
 };
 
+exports.getKyc = async  (req, res) =>  {
+
+  try{
+
+    const payload = JSON.stringify({
+      payment_system_name: req.body.system_name, 
+      msisdn: req.body.phone
+    });
+  
+    const options = buildPaymentOptions(payload, "/shap/api/v1/merchant/kyc");
+    const response = await sendHttpRequest(options, payload);
+
+    res.status(201).json({status: 0, response}); 
+
+  }catch(err){
+
+    console.log(err); 
+    res.status(505).json({err})
+  }
+
+
+
+  
+
+
+}
+
 exports.initPayment = async (req, res) => {
 
     console.log(req.body); 

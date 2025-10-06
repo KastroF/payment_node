@@ -9,5 +9,6 @@ const auth = require("../middleware/auth");
 router.post("/initvisa", paymentCtrl.initPayment); 
 router.post("/callback", paymentCtrl.useCallback)
 router.post("/getlist", auth, paymentCtrl.paiementsList);
+router.post("/getkyc", paymentCtrl.getKyc);
 
 module.exports = router; 
