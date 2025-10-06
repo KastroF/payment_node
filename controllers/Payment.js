@@ -39,6 +39,7 @@ exports.getKyc = async  (req, res) =>  {
 
   try{
 
+    console.log(req.body);
     const payload = JSON.stringify({
       payment_system_name: req.body.system_name, 
       msisdn: req.body.phone
