@@ -35,6 +35,7 @@ const buildPaymentOptions = (data, path) => {
   };
 };
 
+/*
 exports.getKyc = async  (req, res) =>  {
 
   try{
@@ -61,7 +62,7 @@ exports.getKyc = async  (req, res) =>  {
 
 }
 
-/*
+*/
 
 exports.getKyc = async (req, res) => {
   try {
@@ -111,7 +112,7 @@ exports.getKyc = async (req, res) => {
   }
 };
 
-*/
+
 
 
 exports.initPayment = async (req, res) => {
