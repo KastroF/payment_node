@@ -35,8 +35,33 @@ const buildPaymentOptions = (data, path) => {
   };
 };
 
-const https = require("https");
+exports.getKyc = async  (req, res) =>  {
 
+  try{
+
+    console.log(req.body);
+    const payload = JSON.stringify({
+      payment_system_name: req.body.system_name, 
+      msisdn: req.body.phone
+    });
+  
+    const options = buildPaymentOptions(payload, "/api/v1/merchant/kyc");
+    const response = await sendHttpRequest(options, payload);
+
+    console.log("la reponse", response);
+
+    res.status(201).json({status: 0, response}); 
+
+  }catch(err){
+
+    console.log(err); 
+    res.status(505).json({err})
+  }
+
+
+}
+
+/*
 
 exports.getKyc = async (req, res) => {
   try {
@@ -62,7 +87,7 @@ exports.getKyc = async (req, res) => {
 
     // ✅ Envoi de la requête GET
     const response = await new Promise((resolve, reject) => {
-      const reqHttp = https.request(options, (resHttp) => {
+      const reqHttp = http.request(options, (resHttp) => {
         let data = "";
         resHttp.on("data", (chunk) => (data += chunk));
         resHttp.on("end", () => {
@@ -85,6 +110,8 @@ exports.getKyc = async (req, res) => {
     res.status(500).json({ err });
   }
 };
+
+*/
 
 
 exports.initPayment = async (req, res) => {
