@@ -198,6 +198,8 @@ exports.useCallback = async (req, res) => {
 
     }
 
+    console.log(payment);
+
     if(payment && payment.app_name === "agnos"){
 
       try {
