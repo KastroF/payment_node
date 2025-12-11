@@ -105,6 +105,7 @@ exports.getKyc = async (req, res) => {
     });
 
     console.log("Réponse KYC :", response);
+    
     res.status(200).json({ status: 0, response });
   } catch (err) {
     console.error("Erreur KYC :", err);
@@ -197,8 +198,24 @@ exports.useCallback = async (req, res) => {
 
     }
 
+    if(payment && payment.app_name === "agnos"){
+
+      try {
+        await axios.post("https://agnos-node2.onrender.com/api/contribution/callback", {
+          paymentId: payment._id,
+          bill_id: payment.bill_id || null,
+          status: "success"
+        });
+        console.log("retour envoyé avec succès", );
+      } catch (notifyErr) {
+        console.error("Erreur lors de la notification :", notifyErr.message);
+        // Tu peux choisir de ne pas échouer la réponse locale à cause de la notification
+      }
+
+    }
+
     // Envoi de la notification à l'URL externe
-    try {
+   /* try {
       await axios.post("https://lamajoritebloquante.com/statut/", {
         paymentId: payment._id,
         bill_id: payment.bill_id || null,
@@ -208,7 +225,9 @@ exports.useCallback = async (req, res) => {
     } catch (notifyErr) {
       console.error("Erreur lors de la notification :", notifyErr.message);
       // Tu peux choisir de ne pas échouer la réponse locale à cause de la notification
-    }
+    }   
+
+    */
 
     return res.status(201).json({ status: 0 });
   } catch (err) {
