@@ -233,6 +233,27 @@ exports.useCallback = async (req, res) => {
 
     }
 
+
+    if(payment && payment.app_name === "binaire-payment"){
+
+      try {
+        await axios.post("https://payment.binaire-backend.tech/api/payments/callback", {
+          paymentId: payment._id,
+          bill_id: payment.bill_id || null,
+          status: "success"
+        },     {
+          headers: {
+            Authorization: `Bearer ${process.env.BINAIRE_CALLBACK_TOKEN}`
+          }
+        });
+        console.log("retour envoyé avec succès", );
+      } catch (notifyErr) {
+        console.error("Erreur lors de la notification :", notifyErr.message);
+        // Tu peux choisir de ne pas échouer la réponse locale à cause de la notification
+      }
+
+    }
+
     // Envoi de la notification à l'URL externe
    /* try {
       await axios.post("https://lamajoritebloquante.com/statut/", {
